@@ -7,45 +7,48 @@ import socket
 import hashlib
 import bencode # sudo pip3 install bencode-python3
 
-charset_encoding    = 'ISO-8859-1'
+print(str(os.environ).encode('utf-8'))
+
+CHARSET_ENCODING    = 'ISO-8859-1'
 
 def make_KRPC_Query(query, ip=socket.gethostbyname('router.bittorrent.com'), port=6881):
     if ip == 0:
         print('Invalid port !')
         return []
-    socket_buffer_size  = 1024
-    node_ip_port        = (ip, port)
-    bencodedQuery       = bencode.bencode(query)
+    SOCKET_BUFFER_SIZE  = 1024
+    NODE_IP_PORT        = (ip, port)
+    BENCODEDQUERY       = bencode.bencode(query)
     client_socket       = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
     client_socket.settimeout(0.25)
-    client_socket.sendto(bytes(bencodedQuery, charset_encoding), node_ip_port)
+    client_socket.sendto(bytes(BENCODEDQUERY, CHARSET_ENCODING), NODE_IP_PORT)
 
     try:
-        server_response = client_socket.recvfrom(socket_buffer_size)[0]
+        server_response = client_socket.recvfrom(SOCKET_BUFFER_SIZE)[0]
     except socket.timeout:
-        print(node_ip_port,'timeout !')
+        print(NODE_IP_PORT,'timeout !')
         return []
-    server_response     = server_response.decode(charset_encoding)
+    server_response     = server_response.decode(CHARSET_ENCODING)
 
     try:
-        bdecodedMsg     = bencode.bdecode(server_response)
-        return bdecodedMsg
+        BDECODEDMSG     = bencode.bdecode(server_response)
+        return BDECODEDMSG
     except Exception as e:
         print("Invalid server answer\n\n")
         # print(server_response)
         return []    
 
-my_node_id          = hashlib.sha1(str(os.environ).encode('utf-8')).hexdigest()[:20] # fingerprint
-transaction_id      = my_node_id[:2]
+MY_NODE_ID          = hashlib.sha1(str(os.environ).encode('utf-8')).hexdigest()[:20] # fingerprint
+TRANSACTION_ID      = MY_NODE_ID[:2]
 
 # QUERY:ping
-pingQuery           = {"t":transaction_id, "y":"q", "q":"ping", "a":{"id": my_node_id}}
+pingQuery           = {"t":TRANSACTION_ID, "y":"q", "q":"ping", "a":{"id": MY_NODE_ID}}
 bdecodedPingMsg     = make_KRPC_Query(pingQuery)
 target_node_id      = bdecodedPingMsg['r']['id']
 
 # QUERY:find_nodes
-findNodeQuery       = {"t":transaction_id, "y":"q", "q":"find_node", "a": {"id": my_node_id, "target": target_node_id}}
+findNodeQuery       = {"t":TRANSACTION_ID, "y":"q", "q":"find_node", "a": {"id": MY_NODE_ID, "target": target_node_id}}
 bdecodedFindNodeMsg = make_KRPC_Query(findNodeQuery)
+
 nodes               = bdecodedFindNodeMsg['r']['nodes']
 nodes_pool          = list(map(''.join, zip(*[iter(nodes)]*26)))
 tested              = 0
@@ -55,8 +58,8 @@ delay               = 60*60
 while True:
     for node in nodes_pool:
         node_id     = node[0:20]
-        nodes_ip    = bytes(node[20:24], charset_encoding)
-        nodes_port  = bytes(node[24:26], charset_encoding)
+        nodes_ip    = bytes(node[20:24], CHARSET_ENCODING)
+        nodes_port  = bytes(node[24:26], CHARSET_ENCODING)
         ip          = socket.inet_ntop(socket.AF_INET, nodes_ip)
         port        = struct.unpack(">H",nodes_port)[0]
 
@@ -75,14 +78,14 @@ while True:
         # findHashesQuery       = {
         #     "m":{"p":public_port,"yourip":packed_public_ip},
         #     "t":"aa", "y":"q", "q":"sample_infohashes",
-        #     "a": {"id":my_node_id, "target":node_id}
+        #     "a": {"id":MY_NODE_ID, "target":node_id}
         # }
 
         # QUERY:sample_infohashes
         findHashesQuery         = {
-                                "t":transaction_id, "y":"q",
+                                "t":TRANSACTION_ID, "y":"q",
                                 "q":"sample_infohashes", 
-                                "a": {"id":my_node_id, "target":node_id}
+                                "a": {"id":MY_NODE_ID, "target":node_id}
                                 }
         bdecodedFindHashesMsg   = make_KRPC_Query(findHashesQuery, ip, port)
         tested                  += 1
@@ -107,15 +110,15 @@ while True:
 
                     # QUERY:find_nodes
                     findNodeQuery_backup    = {
-                        "t":transaction_id, "y":"q",
+                        "t":TRANSACTION_ID, "y":"q",
                         "q":"find_node", 
-                        "a": {"id":my_node_id, "target":target_node_id}
+                        "a": {"id":MY_NODE_ID, "target":target_node_id}
                         }
-                    bdecodedMsg_backup      = make_KRPC_Query(findNodeQuery_backup, ip, port)
+                    BDECODEDMSG_backup      = make_KRPC_Query(findNodeQuery_backup, ip, port)
 
-                    if bdecodedMsg_backup != [] and 'r' in bdecodedMsg_backup:
-                        if 'nodes' in bdecodedMsg_backup['r']:
-                            new_nodes           = bdecodedMsg_backup['r']['nodes']
+                    if BDECODEDMSG_backup != [] and 'r' in BDECODEDMSG_backup:
+                        if 'nodes' in BDECODEDMSG_backup['r']:
+                            new_nodes           = BDECODEDMSG_backup['r']['nodes']
                             new_nodes_list      = list(map(''.join, zip(*[iter(new_nodes)]*26)))
                             added               = 0
 
