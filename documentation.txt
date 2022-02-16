@@ -1,6 +1,4 @@
 http://bittorrent.org/beps/bep_0005.html
-http://bittorrent.org/beps/bep_0009.html
-http://bittorrent.org/beps/bep_0010.html
 http://bittorrent.org/beps/bep_0051.html
 https://pythontic.com/modules/socket/udp-client-server-example
 https://pretagteam.com/question/how-to-interpret-nodes-in-a-dht-response
@@ -33,7 +31,10 @@ https://github.com/shiyanhui/dht
 https://gist.github.com/gubatron/cd9cfa66839e18e49846
 https://github.com/simionrobert/BitInsight
 https://stackoverflow.com/a/42795285
+https://github.com/funkBuild/DHT-Crawler
+https://github.com/shiyanhui/dht
 
 http://www.bittorrent.org/beps/bep_0010.html
 http://www.bittorrent.org/beps/bep_0009.html
 https://chowdera.com/2022/01/202201041624120027.html
+https://github.com/1205628673/BT-Spider/blob/master/tor-spider.py
