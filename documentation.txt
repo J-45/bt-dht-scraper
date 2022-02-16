@@ -33,3 +33,7 @@ https://github.com/shiyanhui/dht
 https://gist.github.com/gubatron/cd9cfa66839e18e49846
 https://github.com/simionrobert/BitInsight
 https://stackoverflow.com/a/42795285
+
+http://www.bittorrent.org/beps/bep_0010.html
+http://www.bittorrent.org/beps/bep_0009.html
+https://chowdera.com/2022/01/202201041624120027.html
