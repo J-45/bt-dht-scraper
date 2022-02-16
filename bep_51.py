@@ -50,6 +50,7 @@ nodes               = bdecodedFindNodeMsg['r']['nodes']
 nodes_pool          = list(map(''.join, zip(*[iter(nodes)]*26)))
 tested              = 0
 hashes_seen         = 0
+delay               = 60*60
 
 while True:
     for node in nodes_pool:
@@ -124,6 +125,6 @@ while True:
                                     added       += 1
                                     # sys.exit(0)
                             print(f'{added} nodes added!')
-    delay = 60*60
+    
     print(f'Waiting {delay} seconds...')
     time.sleep(delay) # wait before send requests to the same IPs
