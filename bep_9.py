@@ -5,66 +5,66 @@ import bencode
 import hashlib
 from struct import pack,unpack
 
-ip = "127.0.0.1" # socket.gethostbyname('router.bittorrent.com')
-port = 61470 # 6881
-client_socket       = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-# client_socket.bind((ip, port))
-client_socket.settimeout(1)
+IP = "127.0.0.1" # socket.gethostbyname('router.bittorrent.com')
+PORT = 61470 # 6881
+BUFFER = 512
+CLIENT_SOCKET       = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# CLIENT_SOCKET.bind((IP, PORT))
+CLIENT_SOCKET.connect((IP,PORT))
+CLIENT_SOCKET.settimeout(3)
 
 
 
 
 
+msg = b'\x13' # = unpack('B', msg)[0] = 19
+msg += b'BitTorrent protocol'
+msg += b'\x00\x00\x00\x00\x10\x00\x00\x00' # "\x00\x00\x00\x00\x00\x10\x00\x00"
+msg += bytearray.fromhex("F1FCDC1462D36530F526C1D9402EEC9100B7BA18")
+msg += hashlib.sha1(str(os.environ).encode()).hexdigest()[:20].encode()
 
-BT_PROTOCOL = "Bittorrent protocol"
-info_hash = bytearray.fromhex("1675404082c58d61ee41d3bd1c66b6f0b9326bf1")
-# print(info_hash)
-bt_header = str(len(BT_PROTOCOL)) + BT_PROTOCOL
-bt_ext_byte = "\x00\x00\x00\x00\x00\x10\x00\x00"
-peerId = hashlib.sha1(str(os.environ).encode('utf-8')).hexdigest()[:20]
-msg = bt_header.encode() + bt_ext_byte.encode() + info_hash + peerId.encode()
-
-print(">",msg)
-client_socket.sendto(msg, (ip, port))
+print(">", msg)
+CLIENT_SOCKET.send(msg)
 
 try:
-    server_response = client_socket.recv(1024)
-    print("<",server_response.decode('ascii', 'backslashreplace'))
+    server_response = CLIENT_SOCKET.recv(BUFFER)
+    print("<<<",server_response)
 except socket.timeout:
-    print((ip, port),'timeout !')
+    print((IP, PORT),'timeout !')
 
 
-
+print("")
 
 
 BT_MSG_ID = 20
 EXT_HANDSHAKE = 0
-msg = chr(BT_MSG_ID).encode() + chr(EXT_HANDSHAKE).encode() + bencode.bencode({'msg_type': 0, 'piece': 0}).encode() 
+msg = chr(BT_MSG_ID).encode() + chr(EXT_HANDSHAKE).encode() + bencode.bencode({"m":{"ut_metadata":1}}).encode()
 msgLen = pack(">I",len(msg))
 msg = msgLen+msg
-print(">",msg)
-client_socket.sendto(msg, (ip, port))
+print(">", msg)
+CLIENT_SOCKET.send(msg)
 
 try:
-    server_response = client_socket.recv(1024)
-    print("<",server_response.decode('ascii', 'backslashreplace'))
+    server_response = CLIENT_SOCKET.recv(BUFFER)
+    print("<<<",server_response)
 except socket.timeout:
-    print((ip, port),'timeout !')
+    print((IP, PORT),'timeout !')
 
 
+# print("")
 
 
+# msg = chr(BT_MSG_ID).encode() + chr(EXT_HANDSHAKE).encode() + bencode.bencode(bencode.bencode({'msg_type': 0, 'piece': 0})).encode() 
+# msgLen = pack(">I",len(msg))
+# msg = msgLen+msg
+# print(">", msg)
+# CLIENT_SOCKET.send(msg)
 
-msg = chr(BT_MSG_ID).encode() + chr(EXT_HANDSHAKE).encode() + bencode.bencode(bencode.bencode({'msg_type': 0, 'piece': 0})).encode() 
-msgLen = pack(">I",len(msg))
-msg = msgLen+msg
-print(">",msg)
-client_socket.sendto(msg, (ip, port))
+# try:
+#     server_response = CLIENT_SOCKET.recv(BUFFER)
+#     print("<<<",server_response)
+# except socket.timeout:
+#     print((IP, PORT),'timeout !')
 
-try:
-    server_response = client_socket.recv(1024)
-    print("<",server_response.decode('ascii', 'backslashreplace'))
-except socket.timeout:
-    print((ip, port),'timeout !')
-
-# clear;cd /home/groot/Documents/bt-dht-scraper/;watch python3 handshake.py
+CLIENT_SOCKET.close()
+# clear;cd /home/groot/Documents/bt-dht-scraper/;watch python3 bep_9.py
