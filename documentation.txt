@@ -39,3 +39,4 @@ http://www.bittorrent.org/beps/bep_0009.html
 https://chowdera.com/2022/01/202201041624120027.html
 https://github.com/1205628673/BT-Spider/blob/master/tor-spider.py
 https://stackoverflow.com/questions/64260947/peer-not-responding-to-handshake-message-in-bittorrent-protocol
+https://wiki.theory.org/BitTorrentSpecification#Handshake
