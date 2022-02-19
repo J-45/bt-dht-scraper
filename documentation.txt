@@ -35,6 +35,7 @@ https://github.com/funkBuild/DHT-Crawler
 https://github.com/shiyanhui/dht
 https://blog.jse.li/posts/torrent/
 
+https://stackoverflow.com/questions/18394049/bittorrent-peer-handshake/21488125
 http://www.bittorrent.org/beps/bep_0010.html
 http://www.bittorrent.org/beps/bep_0009.html
 https://chowdera.com/2022/01/202201041624120027.html
