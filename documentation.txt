@@ -33,6 +33,7 @@ https://github.com/simionrobert/BitInsight
 https://stackoverflow.com/a/42795285
 https://github.com/funkBuild/DHT-Crawler
 https://github.com/shiyanhui/dht
+https://blog.jse.li/posts/torrent/
 
 http://www.bittorrent.org/beps/bep_0010.html
 http://www.bittorrent.org/beps/bep_0009.html
@@ -40,3 +41,4 @@ https://chowdera.com/2022/01/202201041624120027.html
 https://github.com/1205628673/BT-Spider/blob/master/tor-spider.py
 https://stackoverflow.com/questions/64260947/peer-not-responding-to-handshake-message-in-bittorrent-protocol
 https://wiki.theory.org/BitTorrentSpecification#Handshake
+https://blog.birost.com/a?ID=00350-3e1ceedc-1653-4f85-999a-74b84f574950
