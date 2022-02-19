@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import sys
 import time
 import struct
 import socket
@@ -82,29 +83,28 @@ while True:
         # }
 
         # QUERY:sample_infohashes
-        findHashesQuery         = {
-                                "t":TRANSACTION_ID, "y":"q",
-                                "q":"sample_infohashes", 
-                                "a": {"id":MY_NODE_ID, "target":node_id}
-                                }
-        bdecodedFindHashesMsg   = make_KRPC_Query(findHashesQuery, ip, port)
-        tested                  += 1
+        findHashesQuery             = {
+                                    "t":TRANSACTION_ID, "y":"q",
+                                    "q":"sample_infohashes", 
+                                    "a": {"id":MY_NODE_ID, "target":node_id}
+                                    }
+        bdecodedFindHashesMsg       = make_KRPC_Query(findHashesQuery, ip, port)
+        tested                      += 1
 
         if bdecodedFindHashesMsg != []:
             if 'r' in bdecodedFindHashesMsg:
                 if 'samples' in bdecodedFindHashesMsg['r']:
-                    info_hashes     = bdecodedFindHashesMsg['r']['samples']
+                    samples         = bdecodedFindHashesMsg['r']['samples']
                     interval        = bdecodedFindHashesMsg['r']['interval']
                     remaining_hashes= bdecodedFindHashesMsg['r']['num']
+                    hashes_seen    += round(len(samples)/20)
 
-                    print(f'{round(len(info_hashes)/20)}/{round((len(info_hashes)/20))+remaining_hashes} info_hashes ({len(info_hashes)} bytes) interval {interval} seconds')
+                    print(f'{round(len(samples)/20)}/{round((len(samples)/20))+remaining_hashes} info_hashes ({len(samples)} bytes) interval {interval} seconds')
 
-                    for v in range(0, len(info_hashes), 20):
-                        hashe       = info_hashes[v:v+20]
-                        hex_hashe   = hashe.encode('latin1').hex()
+                    for v in range(0, len(samples), 20):
+                        hash        = samples[v:v+20]
+                        hex_hashe   = hash.encode('latin1').hex()
                         print(f"magnet:?xt=urn:btih:{hex_hashe}")
-                        hashes_seen   += 1
-
                 else:
                     print('No info_hashes found, fetching nodes...')
 
@@ -119,12 +119,12 @@ while True:
                     if BDECODEDMSG_backup != [] and 'r' in BDECODEDMSG_backup:
                         if 'nodes' in BDECODEDMSG_backup['r']:
                             new_nodes           = BDECODEDMSG_backup['r']['nodes']
-                            new_nodes_list      = list(map(''.join, zip(*[iter(new_nodes)]*26)))
+                            concatenated_nodes  = list(map(''.join, zip(*[iter(new_nodes)]*26)))
                             added               = 0
 
-                            for new_nodE in new_nodes_list:
-                                if new_nodE not in nodes_pool:
-                                    nodes_pool  += [new_nodE]
+                            for peer_id in concatenated_nodes:
+                                if peer_id not in nodes_pool:
+                                    nodes_pool  += [peer_id]
                                     added       += 1
                                     # sys.exit(0)
                             print(f'{added} nodes added!')
