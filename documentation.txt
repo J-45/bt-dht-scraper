@@ -43,3 +43,4 @@ https://github.com/1205628673/BT-Spider/blob/master/tor-spider.py
 https://stackoverflow.com/questions/64260947/peer-not-responding-to-handshake-message-in-bittorrent-protocol
 https://wiki.theory.org/BitTorrentSpecification#Handshake
 https://blog.birost.com/a?ID=00350-3e1ceedc-1653-4f85-999a-74b84f574950
+https://github.com/cuijun123/phpDhtSpider/blob/master/dht_client_v2(task)/inc/Metadata.class.php
